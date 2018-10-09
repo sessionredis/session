@@ -31,7 +31,9 @@ public class WebSecurityConfig extends WebMvcConfigurerAdapter {
         // 排除配置
         addInterceptor.excludePathPatterns("/error");
         addInterceptor.excludePathPatterns("/login**");
-
+        addInterceptor.excludePathPatterns("/users");
+        addInterceptor.excludePathPatterns("/jquery-1.8.3.min.js");
+        addInterceptor.excludePathPatterns("/jquery.md5.js");
         // 拦截配置
         addInterceptor.addPathPatterns("/**");
     }
