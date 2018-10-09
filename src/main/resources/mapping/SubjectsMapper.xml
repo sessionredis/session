@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.test01.mapper.SubjectsMapper" >
+  <resultMap id="BaseResultMap" type="com.test01.entity.Subjects" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="subject_name" property="subjectName" jdbcType="VARCHAR" />
+    <result column="teacher_name" property="teacherName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, subject_name, teacher_name
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from subjects
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.util.Map" >
+    delete from subjects
+    where id = #{subject_id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.test01.entity.Subjects" >
+    insert into subjects (id, subject_name, teacher_name
+      )
+    values (#{id,jdbcType=INTEGER}, #{subjectName,jdbcType=VARCHAR}, #{teacherName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.test01.entity.Subjects" >
+    insert into subjects
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="subjectName != null" >
+        subject_name,
+      </if>
+      <if test="teacherName != null" >
+        teacher_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="subjectName != null" >
+        #{subjectName,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherName != null" >
+        #{teacherName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.test01.entity.Subjects" >
+    update subjects
+    <set >
+      <if test="subjectName != null" >
+        subject_name = #{subjectName,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherName != null" >
+        teacher_name = #{teacherName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.test01.entity.Subjects" >
+    update subjects
+    set subject_name = #{subjectName,jdbcType=VARCHAR},
+      teacher_name = #{teacherName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectSubjects" parameterType="java.util.Map" resultMap="BaseResultMap">
+  	select * from subjects
+  </select>
+</mapper>

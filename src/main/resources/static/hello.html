@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="jquery-1.8.3.min.js" type="text/javascript"></script>
+<script>
+	$(function(){
+		$("#zhuxiao").click(function(){
+			$.ajax({
+				url:"/logout",
+				type:"GET",
+				success:function(info){
+					location.href="/logout";
+					location.reload();
+				}
+			})
+		});
+		queryTeacher();
+		selectClasses();
+		querySubject();
+		queryStudent();
+		selectSubject();
+		$("#teacherId").click(function(){
+			insertTeacher();
+		});
+		$("#subjectId").click(function(){
+			insertSubject();
+		});
+		$("#studentId").click(function(){
+			insertStudent();
+		});
+		$("#sumScoreId").click(function(){
+			sumScore();
+		});
+		$("#refreshStu").click(function(){
+			queryTeacher();
+			selectClasses();
+			querySubject();
+			queryStudent();
+			selectSubject();
+		});
+		//下载json文件
+		$('.download').click(function(){
+			$.ajax({
+				url:"/subjects",
+				type:"GET",
+				dataType:"json",
+				success:function(info){
+					var d = info;
+				    var datastr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(d));
+				    var downloadAnchorNode = document.createElement('a')
+				    downloadAnchorNode.setAttribute("href", datastr);
+				    downloadAnchorNode.setAttribute("download", 'tem.json')
+				    downloadAnchorNode.click();
+				    downloadAnchorNode.remove();
+				}
+			});
+			
+			
+		   
+		})
+	});
+	function queryTeacher(){
+		 $.ajax({
+				url:"/teacher",
+				type:"GET",
+				dataType:"json",
+				/* data:JSON.stringify({"id":id}),
+				contentType:"application/json", */
+				success:function(info){
+					var _html="";
+					$.each(info,function(e,data){
+						_html+="<tr><td>"+data.classesName+"</td>";
+						_html+="<td>"+data.teacher+"</td>";
+						_html+="<td><input type='button' value='删除' onclick='delTeacher("+data.id+");'/></td></tr>";
+					})
+					$("#teaTableId").html(_html);
+				}
+			});
+	}
+	function delTeacher(id){
+		$.ajax({
+			url:"/teacher",
+			type:"DELETE",
+			dataType:"json",
+			data:JSON.stringify({"teacher_id":id}),
+			contentType:"application/json",
+			success:function(info){
+				alert(info.message);
+				queryTeacher();
+				selectClasses();
+				querySubject();
+				queryStudent();
+				selectSubject();
+			}
+		});
+	}
+	function insertTeacher(){
+		 $.ajax({
+				url:"/teacher",
+				type:"POST",
+				dataType:"json",
+				data:$("#teacherForm").serialize(),
+				success:function(info){
+					$("input").val("");
+					queryTeacher();
+					selectClasses();
+					querySubject();
+					queryStudent();
+					selectSubject();
+				}
+			});
+	}
+	function selectClasses(){
+		 $.ajax({
+				url:"/teacher",
+				type:"GET",
+				dataType:"json",
+				success:function(info){
+					var _html="";
+					$.each(info,function(e,data){
+						_html+="<option value="+data.id+">"+data.classesName+"</option>";
+					})
+					$("#selectClasses").html(_html);
+				}
+			});
+	}
+	function querySubject(){
+		$.ajax({
+			url:"/subjects",
+			type:"GET",
+			dataType:"json",
+			success:function(info){
+				var _html="";
+				$.each(info,function(e,data){
+					_html+="<tr><td>"+data.subjectName+"</td>";
+					_html+="<td>"+data.teacherName+"</td>";
+					_html+="<td><input type='button' value='删除' onclick='delSubject("+data.id+");'/></td></tr>";
+				})
+				$("#subTableId").html(_html);
+			}
+		});
+	}
+	function insertSubject(){
+		 $.ajax({
+				url:"/subjects",
+				type:"POST",
+				dataType:"json",
+				data:$("#subjectForm").serialize(),
+				success:function(info){
+					$("input").val("");
+					queryTeacher();
+					selectClasses();
+					querySubject();
+					queryStudent();
+					selectSubject();
+				}
+			}); 
+	}
+	function delSubject(id){
+		 $.ajax({
+				url:"/subjects",
+				type:"DELETE",
+				dataType:"json",
+				data:JSON.stringify({"subject_id":id}),
+				contentType:"application/json",
+				success:function(info){
+					alert(info.message);
+					queryTeacher();
+					selectClasses();
+					querySubject();
+					queryStudent();
+					selectSubject();
+				}
+			});
+	}
+	function selectSubject(){
+		$.ajax({
+			url:"/subjects",
+			type:"GET",
+			dataType:"json",
+			success:function(info){
+				var _html="";
+				$.each(info,function(e,data){
+					_html+="<option value="+data.id+">"+data.subjectName+"</option>";
+				})
+				$("#selectSubject").html(_html);
+			}
+		});
+	}
+	function queryStudent(){
+		$.ajax({
+			url:"/students",
+			type:"GET",
+			dataType:"json",
+			success:function(info){
+				var _html="";
+				$.each(info,function(e,data){
+					_html+="<tr><td>"+data.name+"</td>";
+					_html+="<td>"+data.age+"</td>";
+					_html+="<td>"+data.classesId+"</td>";
+					_html+="<td>"+data.scores+"</td>";
+					_html+="<td>"+data.sex+"</td>";
+					_html+="<td>"+data.homeAddress+"</td>";
+					_html+="<td>"+data.phone+"</td>";
+					_html+="<td>"+data.subject+"</td>";
+					var sumScores = "";
+					if(data.sumScores!=null){
+						sumScores=data.sumScores;
+					}
+					_html+="<td>"+sumScores+"</td>";
+					_html+="<td><input type='button' value='删除' onclick='delStudent("+data.id+");'></td></tr>";
+				})
+				$("#stuTableId").html(_html);
+			}
+		});
+	}
+	function insertStudent(){
+		$.ajax({
+			url:"/students",
+			type:"POST",
+			dataType:"json",
+			data:$("#studentForm").serialize(),
+			success:function(info){
+				$("input").val("");
+				queryTeacher();
+				selectClasses();
+				querySubject();
+				queryStudent();
+				selectSubject();
+			}
+		}); 
+	}
+	function delStudent(id){
+		$.ajax({
+			url:"/students",
+			type:"DELETE",
+			dataType:"json",
+			data:JSON.stringify({"id":id}),
+			contentType:"application/json",
+			success:function(info){
+				alert(info.message);
+				queryTeacher();
+				selectClasses();
+				querySubject();
+				queryStudent();
+				selectSubject();
+			}
+		}); 
+	}
+	function sumScore(){
+		$.ajax({
+			url:"/students",
+			type:"PATCH",
+			dataType:"json",/* 
+			data:JSON.stringify({"id":id}),
+			contentType:"application/json", */
+			success:function(info){
+				queryTeacher();
+				selectClasses();
+				querySubject();
+				queryStudent();
+				selectSubject();
+			}
+		});
+	}
+	</script>
+</head>
+<body>
+<button id="zhuxiao">注销</button>
+<button class="download">下载</button>
+
+<form action="" id="teacherForm">
+	班级:<input type="text" name="classesName"/><br/>
+	班主任:<input type="text" name="teacher"/><br/>
+</form>
+	<font style="color: red;">一个班级对应一个班主任</font>
+<button id="teacherId">提交</button>
+教师表:
+<div>
+	<table border="1">
+		<tr>
+			<td>班级</td>
+			<td>班主任</td>
+			<td>操作</td>
+		</tr>
+		<tbody id="teaTableId">
+			
+		</tbody>
+	</table>
+</div>
+<h1><font style="color: #11731e91;">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</font></h1>
+<form action="" id="subjectForm">
+	学科名称:<input type="text" name="subjectName"/><br/>
+	教学老师:<input type="text" name="teacherName"/><br/>
+</form>
+<button id="subjectId">提交</button>
+学科表:
+<div>
+	<table border="1">
+		<tr>
+			<td>学科名称</td>
+			<td>教学老师</td>
+			<td>操作</td>
+		</tr>
+		<tbody id="subTableId">
+			
+		</tbody>
+	</table>
+</div>
+<h1><font style="color: #11731e91;">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</font></h1>
+<form action="" id="studentForm">
+	姓名:<input type="text" name="name"/><br/>
+	年龄:<input type="text" name="age"/><br/>
+	班级:
+	<select id="selectClasses" name="classesId">
+		
+	</select><br/>
+	成绩:<input type="text" name="scores"/><br/>
+	性别:<input type="text" name="sex"/><br/>
+	家庭地址:<input type="text" name="homeAddress"/><br/>
+	手机号:<input type="text" name="phone"/><br/>
+	学科:
+	<select id="selectSubject" name="subject">
+		
+	</select><br/>
+</form>
+<button id="studentId">提交</button>
+学生表:
+<button id="sumScoreId">计算学生总成绩</button>
+<button id="refreshStu">刷新</button>
+<div>
+	<table border="1">
+		<tr>
+			<td>姓名</td>
+			<td>年龄</td>
+			<td>班级</td>
+			<td>成绩</td>
+			<td>性别</td>
+			<td>家庭地址</td>
+			<td>手机号</td>
+			<td>学科</td>
+			<td>总分数</td>
+			<td>操作</td>
+		</tr>
+		<tbody id="stuTableId">
+			
+		</tbody>
+	</table>
+</div>
+</body>
+</html>

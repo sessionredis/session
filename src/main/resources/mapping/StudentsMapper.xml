@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.test01.mapper.StudentsMapper" >
+  <resultMap id="BaseResultMap" type="com.test01.entity.Students" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="age" property="age" jdbcType="INTEGER" />
+    <result column="classes_id" property="classesId" jdbcType="VARCHAR" />
+    <result column="scores" property="scores" jdbcType="DOUBLE" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="home_address" property="homeAddress" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="subject" property="subject" jdbcType="VARCHAR" />
+    <result column="sum_scores" property="sumScores" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, age, classes_id, scores, sex, home_address, phone, subject, sum_scores
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from students
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.util.Map" >
+    delete from students
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.test01.entity.Students" >
+    insert into students (id, name, age, 
+      classes_id, scores, sex, 
+      home_address, phone, subject, 
+      sum_scores)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, 
+      #{classesId,jdbcType=VARCHAR}, #{scores,jdbcType=DOUBLE}, #{sex,jdbcType=VARCHAR}, 
+      #{homeAddress,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{subject,jdbcType=VARCHAR}, 
+      #{sumScores,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.test01.entity.Students" >
+    insert into students
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="age != null" >
+        age,
+      </if>
+      <if test="classesId != null" >
+        classes_id,
+      </if>
+      <if test="scores != null" >
+        scores,
+      </if>
+      <if test="sex != null" >
+        sex,
+      </if>
+      <if test="homeAddress != null" >
+        home_address,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="subject != null" >
+        subject,
+      </if>
+      <if test="sumScores != null" >
+        sum_scores,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        #{age,jdbcType=INTEGER},
+      </if>
+      <if test="classesId != null" >
+        #{classesId,jdbcType=VARCHAR},
+      </if>
+      <if test="scores != null" >
+        #{scores,jdbcType=DOUBLE},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="homeAddress != null" >
+        #{homeAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="subject != null" >
+        #{subject,jdbcType=VARCHAR},
+      </if>
+      <if test="sumScores != null" >
+        #{sumScores,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.test01.entity.Students" >
+    update students
+    <set>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        age = #{age,jdbcType=INTEGER},
+      </if>
+      <if test="classesId != null" >
+        classes_id = #{classesId,jdbcType=VARCHAR},
+      </if>
+      <if test="scores != null" >
+        scores = #{scores,jdbcType=DOUBLE},
+      </if>
+      <if test="sex != null" >
+        sex = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="homeAddress != null" >
+        home_address = #{homeAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="subject != null" >
+        subject = #{subject,jdbcType=VARCHAR},
+      </if>
+      <if test="sumScores != null" >
+        sum_scores = #{sumScores,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.test01.entity.Students" >
+    update students
+    set name = #{name,jdbcType=VARCHAR},
+      age = #{age,jdbcType=INTEGER},
+      classes_id = #{classesId,jdbcType=VARCHAR},
+      scores = #{scores,jdbcType=DOUBLE},
+      sex = #{sex,jdbcType=VARCHAR},
+      home_address = #{homeAddress,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      subject = #{subject,jdbcType=VARCHAR},
+      sum_scores = #{sumScores,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectStudents" parameterType="java.util.Map" resultMap="BaseResultMap">
+  	select t1.id,t1.`name`,t1.age,t2.classes_name classes_id,t1.scores,t1.sex,t1.home_address,t1.phone,t3.subject_name `subject`,t1.sum_scores from students t1 INNER JOIN teachers t2 on t1.classes_id=t2.id
+INNER JOIN subjects t3 on t1.`subject`=t3.id 
+	<trim prefix="WHERE" prefixOverrides="AND|OR" >
+		<if test="teacher_id != null">
+			AND t2.id=#{teacher_id,jdbcType=INTEGER}
+		</if>
+		<if test="subject_id != null">
+			AND t3.id=#{subject_id,jdbcType=INTEGER}
+		</if>
+	</trim>
+  </select>
+  <select id="calculationScores" parameterType="java.util.Map" resultMap="BaseResultMap">
+  	select name,sum(scores) sumScores from students group by name
+  </select>
+  <update id="updateScores" parameterType="com.test01.entity.Students">
+  	update students
+  	set sum_scores = #{sumScores,jdbcType=VARCHAR}
+  	where name = #{name,jdbcType=VARCHAR}
+  </update>
+</mapper>
